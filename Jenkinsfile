@@ -3,6 +3,7 @@ pipeline {
 
     stages {
 	stage('Running unit tests') {
+		steps {
 			echo 'Unit testing..'
 			bat "dotnet test"
 		}
