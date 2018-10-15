@@ -5,7 +5,7 @@ pipeline {
 	stage('Running unit tests') {
 		steps {
 			echo 'Unit testing..'
-			bat "dotnet test *.Test"
+			bat "dotnet test *.Tests"
 		}
 	}
         stage('Build Docker Container') {
