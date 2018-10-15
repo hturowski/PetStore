@@ -3,8 +3,10 @@ pipeline {
 
     stages {
 	stage('Running unit tests') {
-		echo 'Unit testing..'
-		bat "dotnet test"
+			echo 'Unit testing..'
+			bat "dotnet test"
+		}
+	}
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
