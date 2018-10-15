@@ -5,7 +5,7 @@ pipeline {
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
-				bat "docker build -t petservice:${env.BUILD_NUMBER} ."
+				bat "docker build -t petstore:${env.BUILD_NUMBER} ."
             }
         }
         stage('Test') {
@@ -15,7 +15,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-				bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=petservice:${env.BUILD_NUMBER}"
+				bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=petstore:${env.BUILD_NUMBER}"
             }
         }
     }
