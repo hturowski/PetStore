@@ -1,6 +1,6 @@
 ﻿namespace PetStore
 {
-    public struct Pet
+    public class Pet
     {
         public Pet(int id, string name, string type)
         {
@@ -9,8 +9,8 @@
             this.Type = type;
         }
 
-        public int Id { get; }
-        public string Name { get; }
-        public string Type { get; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
     }
 }

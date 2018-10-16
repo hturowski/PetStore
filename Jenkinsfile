@@ -2,12 +2,18 @@ pipeline {
     agent any
 
     stages {
-	stage('Running unit tests') {
-		steps {
-			echo 'Unit testing..'
-			bat "dotnet test"
-		}
-	}
+        stage('Running unit tests') {
+            steps {
+                echo 'Unit testing..'
+                bat "dotnet test"
+            }
+        }
+        stage('Database Migration') {
+            steps {
+                echo 'Applying database migrations..'
+                bat "dotnet ef database update"
+            }
+        }
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
