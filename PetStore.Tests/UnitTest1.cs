@@ -25,12 +25,5 @@ namespace Tests
             Assert.AreEqual(expected.Type, pet.Type);
         }
 
-        [Test]
-        public void PetControllerAllowsPut()
-        {
-            var controller = new PetController();
-            var result = controller.Put();
-            Assert.Pass();
-        }
     }
 }
