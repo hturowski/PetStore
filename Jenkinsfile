@@ -11,7 +11,7 @@ pipeline {
         stage('Database Migration') {
             steps {
                 echo 'Applying database migrations..'
-                bat "cd PetStore;dotnet ef database update;cd.."
+                bat "cd PetStore;dotnet ef database update;cd .."
             }
         }
         stage('Build Docker Container') {
