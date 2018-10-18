@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{56588349-9F75-4790-8F60-8DCE503892E2}"
 	ProjectSection(SolutionItems) = preProject
 		Dockerfile = Dockerfile
+		Jenkinsfile = Jenkinsfile
+		PetStore\pet_store.yml = PetStore\pet_store.yml
+		PetStore\PetStore-MySQL.yml = PetStore\PetStore-MySQL.yml
 	EndProjectSection
 EndProject
 Global

@@ -10,10 +10,22 @@ namespace PetStore.DAO
 
         public DbSet<Pet> Pets { get; set; }
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
-		optionsBuilder.UseMySql("server=localhost;database=pets;user=root;password=root");
-	}
+	    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	    {
+            var dbName = Environment.GetEnvironmentVariable("DBNAME");
+            if(dbName == null)
+            {
+                dbName = "localhost";
+            }
+            else
+            {
+                dbName = "petStore-mysql";
+            }
+
+            var dbConnectionString = $"server={dbName};database=pets;user=root;password=root";
+
+            optionsBuilder.UseMySql(dbConnectionString);
+	    }
 
     }
 }

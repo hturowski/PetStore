@@ -9,10 +9,8 @@ namespace PetStore
 {
     class PetService
     {
-        public static Hashtable petDb = new Hashtable();
         static void Main(string[] args)
         {
-            petDb.Add(1, new Pet(1, "Feynman", "Dog"));
             CreateWebHostBuilder(args).Build().Run();
         }
 
