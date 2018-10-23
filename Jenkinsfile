@@ -2,34 +2,34 @@ pipeline {
     agent any
 
     stages {
-        stage('Running unit tests') {
+        stage('Unit Tests') {
             steps {
                 echo 'Unit testing..'
-                bat "dotnet test"
+                bat "dotnet test ./PetStore.Tests"
             }
         }
         stage('Database Migration') {
             steps {
                 echo 'Applying database migrations..'
-		dir("PetStore") {
+			dir("PetStore") {
                 	bat "dotnet ef database update"
-		}
+			}
             }
         }
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
-		bat "docker build -t petstore:${env.BUILD_NUMBER} ."
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
+				bat "docker build -t petstore:${env.BUILD_NUMBER} ."
             }
         }
         stage('Deploy') {
             steps {
-		bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=petstore:${env.BUILD_NUMBER}"
+				bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=petstore:${env.BUILD_NUMBER}"
+            }
+        }
+        stage('Integration Test') {
+            steps {
+                echo 'Testing..'
             }
         }
     }
