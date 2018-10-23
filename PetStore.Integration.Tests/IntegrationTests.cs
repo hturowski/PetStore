@@ -20,8 +20,6 @@ namespace Tests
         [Test]
         public static void TestPet1()
         {
-            var serializer = new DataContractJsonSerializer(typeof(Pet));
-
             string expected = "{\"id\":1,\"name\":\"Feynman\",\"type\":\"Dog\"}";
             string responseString = "";
             using (var client = new HttpClient())

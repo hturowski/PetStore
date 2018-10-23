@@ -2,7 +2,6 @@
 
 namespace PetStore
 {
-    [DataContractAttribute]
     public class Pet
     {
         public Pet(int id, string name, string type)
