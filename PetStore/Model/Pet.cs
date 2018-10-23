@@ -1,5 +1,8 @@
-﻿namespace PetStore
+﻿using System.Runtime.Serialization;
+
+namespace PetStore
 {
+    [DataContractAttribute]
     public class Pet
     {
         public Pet(int id, string name, string type)

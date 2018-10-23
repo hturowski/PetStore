@@ -11,9 +11,9 @@ pipeline {
         stage('Database Migration') {
             steps {
                 echo 'Applying database migrations..'
-			dir("PetStore") {
+				dir("PetStore") {
                 	bat "dotnet ef database update"
-			}
+				}
             }
         }
         stage('Build Docker Container') {
@@ -29,7 +29,8 @@ pipeline {
         }
         stage('Integration Test') {
             steps {
-                echo 'Testing..'
+                echo 'Integration Testing..'
+                bat "dotnet test ./PetStore.Integration.Tests"
             }
         }
     }
