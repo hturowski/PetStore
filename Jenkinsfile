@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage('Unit Tests') {
             steps {
@@ -32,6 +31,12 @@ pipeline {
                 echo 'Integration Testing..'
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
+			post {
+				failure {
+					echo 'Rolling back..'
+					bat "kubectl rollout undo deployments/rest-test"
+				}
+			}
         }
     }
 }
