@@ -12,17 +12,9 @@ namespace PetStore.DAO
 
 	    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	    {
-            var dbName = Environment.GetEnvironmentVariable("DBNAME");
-            if(dbName == null)
-            {
-                dbName = "localhost";
-            }
-            else
-            {
-                dbName = "petStore-mysql";
-            }
-
-            var dbConnectionString = $"server={dbName};database=pets;user=root;password=root";
+            var dbHost = Environment.GetEnvironmentVariable("DBHOST") ?? "localhost";
+            var dbName = Environment.GetEnvironmentVariable("DBNAME") ?? "pets";
+            var dbConnectionString = $"server={dbHost};database={dbName};user=root;password=root";
 
             optionsBuilder.UseMySql(dbConnectionString);
 	    }
