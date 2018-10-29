@@ -20,7 +20,8 @@ metadata:
   name: petdbinfo
 type: Opaque
 data:
-  dbname: cGV0U3RvcmUtbXlzcWw=
+  dbname: cGV0cw==
+  dbhost: cGV0c3RvcmUtbXlzcWw=
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,7 +48,12 @@ spec:
             secretKeyRef: 
               name: petdbinfo
               key: dbname
-        image: petstore:24
+        - name: DBHOST
+          valueFrom:
+            secretKeyRef: 
+              name: petdbinfo
+              key: dbhost
+        image: petstore:38
         ports:
         - containerPort: 80
           protocol: TCP

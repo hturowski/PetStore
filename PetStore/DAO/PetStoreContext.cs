@@ -15,7 +15,7 @@ namespace PetStore.DAO
             var dbHost = Environment.GetEnvironmentVariable("DBHOST") ?? "localhost";
             var dbName = Environment.GetEnvironmentVariable("DBNAME") ?? "pets";
             var dbConnectionString = $"server={dbHost};database={dbName};user=root;password=root";
-
+            System.Console.WriteLine(dbConnectionString);
             optionsBuilder.UseMySql(dbConnectionString);
 	    }
 
