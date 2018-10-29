@@ -14,7 +14,7 @@ namespace Tests
         [Test]
         public void PetControllerAddsZoey()
         {
-            Pet expected = new Pet(100, "Zoey", "Cat");
+            Pet expected = new Pet(100, "Feynman", "Dog");
             var controller = new PetController();
             var postResult = controller.Post(expected);
             Assert.IsInstanceOf<OkObjectResult>(postResult);
@@ -33,16 +33,16 @@ namespace Tests
         [Test]
         public void PetControllerDeletesZoey()
         {
-            Pet expected = new Pet(100, "Zoey", "Cat");
+            Pet expected = new Pet(100, "Feynman", "Dog");
             var controller = new PetController();
             var deleteResult = controller.Delete(expected.Id);
             Assert.IsInstanceOf<OkResult>(deleteResult);
         }
 
         [Test]
-        public void PetControllerReturnsFeynman()
+        public void PetControllerReturnsZoey()
         {
-            Pet expected = new Pet(1, "Feynman", "Dog");
+            Pet expected = new Pet(1, "Zoey", "Cat");
             var controller = new PetController();
             var result = controller.Get(expected.Id);
             Assert.IsInstanceOf<OkObjectResult>(result);

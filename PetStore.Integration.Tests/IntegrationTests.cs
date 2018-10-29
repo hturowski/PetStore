@@ -20,7 +20,7 @@ namespace Tests
         [Test]
         public static void TestPet1()
         {
-            string expected = "{\"id\":1,\"name\":\"Feynman\",\"type\":\"Dog\"}";
+            string expected = "{\"id\":1,\"name\":\"Zoey\",\"type\":\"Cat\"}";
             string responseString = "";
             using (var client = new HttpClient())
             {
