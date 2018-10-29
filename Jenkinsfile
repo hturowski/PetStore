@@ -1,13 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Unit Tests') {
-            steps {
-                echo 'Unit testing..'
-                bat "dotnet test ./PetStore.Tests"
-            }
-        }
-        stage('Database Migration') {
+       stage('Database Migration') {
             steps {
                 echo 'Applying database migrations..'
 				dir("PetStore") {
@@ -15,6 +9,13 @@ pipeline {
 				}
             }
         }
+        stage('Unit Tests') {
+            steps {
+                echo 'Unit testing..'
+                bat "dotnet test ./PetStore.Tests"
+            }
+        }
+
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
