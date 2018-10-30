@@ -1,10 +1,11 @@
 pipeline {
     agent any
     stages {
+		environment{
+			DOCKERNAME="petstore_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
+			DBNAME="petstore_${env.BRANCH_NAME}"
+		}
        stage('Database Migration') {
-			environment {
-				DBNAME="petstore_${env.BRANCH_NAME}"
-			}
             steps {
                 echo 'Applying database migrations..'
 				dir("PetStore") {
@@ -22,12 +23,12 @@ pipeline {
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
-				bat "docker build -t petstore:${env.BUILD_NUMBER} ."
+				bat "docker build -t ${env.DOCKERNAME} ."
             }
         }
         stage('Deploy') {
             steps {
-				bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=petstore:${env.BUILD_NUMBER}"
+				bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=${env.DOCKERNAME}"
             }
         }
         stage('Integration Test') {

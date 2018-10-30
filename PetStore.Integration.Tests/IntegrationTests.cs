@@ -24,7 +24,7 @@ namespace Tests
             string responseString = "";
             using (var client = new HttpClient())
             {
-                var response = client.GetAsync("http://localhost/pet/1").Result;
+                var response = client.GetAsync("http://localhost/pets/1").Result;
 
                 if (response.IsSuccessStatusCode)
                 {
