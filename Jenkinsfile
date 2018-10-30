@@ -1,10 +1,10 @@
 pipeline {
     agent any
+	environment{
+		DOCKERNAME="petstore_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
+		DBNAME="petstore_${env.BRANCH_NAME}"
+	}
     stages {
-		environment{
-			DOCKERNAME="petstore_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
-			DBNAME="petstore_${env.BRANCH_NAME}"
-		}
        stage('Database Migration') {
             steps {
                 echo 'Applying database migrations..'
