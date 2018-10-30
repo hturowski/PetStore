@@ -3,7 +3,7 @@ pipeline {
 	environment{
 		DOCKERNAME="petstore_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
 		DBNAME="petstore_${env.BRANCH_NAME}"
-		KUBCONFIG="c:\\Users\\hturowski\\.kube\\config"
+		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
 	}
     stages {
        stage('Database Migration') {
