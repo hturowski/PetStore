@@ -3,6 +3,7 @@ pipeline {
 	environment{
 		DOCKERNAME="petstore_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
 		DBNAME="petstore_${env.BRANCH_NAME}"
+		KUBCONFIG="c:\\Users\\hturowski\\.kube\\config"
 	}
     stages {
        stage('Database Migration') {
@@ -29,7 +30,7 @@ pipeline {
         stage('Deploy') {
             steps {
 				bat "kubectl set env deployments/rest-test DBNAME=${env.DBNAME}"
-				bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=${env.DOCKERNAME}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set image deployments/rest-test rest-test=${env.DOCKERNAME}"
             }
         }
         stage('Integration Test') {
