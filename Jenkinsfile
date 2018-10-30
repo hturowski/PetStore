@@ -29,7 +29,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-				bat "kubectl set env deployments/rest-test DBNAME=${env.DBNAME}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/rest-test DBNAME=${env.DBNAME}"
 				bat "kubectl --kubeconfig ${env.KUBECONFIG} set image deployments/rest-test rest-test=${env.DOCKERNAME}"
             }
         }
