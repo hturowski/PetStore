@@ -3,6 +3,9 @@ pipeline {
     stages {
        stage('Database Migration') {
             steps {
+				environment {
+					DBNAME="petstore_${env.BRANCH_NAME}"
+				}
                 echo 'Applying database migrations..'
 				dir("PetStore") {
                 	bat "dotnet ef database update"
