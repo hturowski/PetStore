@@ -3,8 +3,13 @@ pipeline {
 	environment{
 		DOCKERNAME="petstore_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
 		DBNAME="petstore_${env.BRANCH_NAME}"
+		DBHOST="localhost"
+		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
+		NAMESPACE="default"
+		SERVICENAME="petstore"
 	}
+
     stages {
        stage('Database Migration') {
             steps {
@@ -14,6 +19,7 @@ pipeline {
 				}
             }
         }
+
         stage('Unit Tests') {
             steps {
                 echo 'Unit testing..'
@@ -27,12 +33,21 @@ pipeline {
 				bat "docker build -t ${env.DOCKERNAME} ."
             }
         }
+
+        stage('Configure Namespace') {
+            steps {
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} create namespace ${env.SERVICENAME}_${env.BRANCH_NAME}"
+			}
+        }
+
         stage('Deploy') {
             steps {
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/rest-test DBNAME=${env.DBNAME}"
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set image deployments/rest-test rest-test=${env.DOCKERNAME}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICENAME} DBNAME=${env.DBNAME} -n ${env.NAMESPACE}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICENAME} DBHOST=${env.KUBEDBHOST} -n ${env.NAMESPACE}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set image deployments/${env.SERVICENAME} ${env.SERVICENAME}=${env.DOCKERNAME} -n ${env.NAMESPACE}"
             }
         }
+
         stage('Integration Test') {
             steps {
                 echo 'Integration Testing..'
@@ -41,7 +56,7 @@ pipeline {
 			post {
 				failure {
 					echo 'Rolling back..'
-					bat "kubectl rollout undo deployments/rest-test"
+					bat "kubectl rollout undo deployments/${env.SERVICENAME} -n ${env.NAMESPACE}"
 				}
 			}
         }
