@@ -6,7 +6,7 @@ pipeline {
 		DBHOST="localhost"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
-		NAMESPACE="default"
+		NAMESPACE="${env.SERVICENAME}-${env.BRANCH_NAME}"
 		SERVICENAME="petstore"
 	}
 
@@ -36,7 +36,7 @@ pipeline {
 
         stage('Configure Namespace') {
             steps {
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} create namespace ${env.SERVICENAME}_${env.BRANCH_NAME}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} create namespace ${env.NAMESPACE}"
 			}
         }
 
