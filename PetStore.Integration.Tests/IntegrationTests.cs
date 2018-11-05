@@ -11,10 +11,14 @@ namespace Tests
     public class Tests
     {
         private static readonly HttpClient client = new HttpClient();
+        public static string servicePort = "80";
+        public static string serviceHost;
 
         [SetUp]
         public void Setup()
         {
+            servicePort = System.Environment.GetEnvironmentVariable("SERVICEPORT") ?? "80";
+            serviceHost = $"http://localhost:{servicePort}";
         }
 
         [Test]
@@ -24,7 +28,8 @@ namespace Tests
             string responseString = "";
             using (var client = new HttpClient())
             {
-                var response = client.GetAsync("http://localhost/pets/1").Result;
+                var serviceURI = $"{serviceHost}/pets/1";
+                var response = client.GetAsync(serviceURI).Result;
 
                 if (response.IsSuccessStatusCode)
                 {

@@ -8,6 +8,7 @@ pipeline {
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
 		NAMESPACE="${env.SERVICENAME}-${env.BRANCH_NAME}"
 		SERVICENAME="petstore"
+        SERVICE_PORT=80
 	}
 
     stages {
@@ -34,11 +35,11 @@ pipeline {
             }
         }
 
-        stage('Configure Namespace') {
-            steps {
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} create namespace ${env.NAMESPACE}"
-			}
-        }
+        // stage('Configure Namespace') {
+        //     steps {
+		// 		bat "kubectl --kubeconfig ${env.KUBECONFIG} create namespace ${env.NAMESPACE}"
+		// 	}
+        // }
 
         stage('Deploy') {
             steps {
@@ -51,6 +52,9 @@ pipeline {
         stage('Integration Test') {
             steps {
                 echo 'Integration Testing..'
+                if(env.BRANCH_NAME != "master") {
+                   SERVICE_PORT=81 
+                }
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
 			post {
