@@ -9,6 +9,8 @@ pipeline {
 		NAMESPACE="${env.SERVICENAME}-${env.BRANCH_NAME}"
 		SERVICENAME="petstore"
         SERVICE_PORT="80"
+		FEATURE_PORT="81"
+		MASTER_PORT="82"
 	}
 
     stages {
@@ -19,9 +21,9 @@ pipeline {
 				}
 			}
 			steps {
-				echo 'Configuring build'
+				echo 'Configuring build..'
 				script {
-					env.SERVICE_PORT="81"
+					env.SERVICE_PORT=env.FEATURE_PORT
 				}
 			}
 		}
