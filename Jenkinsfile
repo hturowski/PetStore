@@ -8,7 +8,7 @@ pipeline {
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
 		NAMESPACE="${env.SERVICENAME}-${env.BRANCH_NAME}"
 		SERVICENAME="petstore"
-        SERVICE_PORT=80
+        SERVICE_PORT="80"
 	}
 
     stages {
@@ -20,7 +20,9 @@ pipeline {
 			}
 			steps {
 				echo 'Configuring build'
-				SERVICE_PORT=81
+				script {
+					env.SERVICE_PORT="81"
+				}
 			}
 		}
 
