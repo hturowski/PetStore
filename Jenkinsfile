@@ -12,6 +12,15 @@ pipeline {
 	}
 
     stages {
+	   stage('Build Configuration') {
+		when {
+			return env.BRANCH_NAME != "master"
+           }
+		   steps {
+			SERVICE_PORT=81
+		   }
+	   }
+
        stage('Database Migration') {
             steps {
                 echo 'Applying database migrations..'
@@ -52,9 +61,6 @@ pipeline {
         stage('Integration Test') {
             steps {
                 echo 'Integration Testing..'
-                if(env.BRANCH_NAME != "master") {
-                   SERVICE_PORT=81 
-                }
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
 			post {
