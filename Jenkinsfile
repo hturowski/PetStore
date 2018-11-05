@@ -19,6 +19,7 @@ pipeline {
 				}
 			}
 			steps {
+				echo 'Configuring build'
 				SERVICE_PORT=81
 			}
 		}
