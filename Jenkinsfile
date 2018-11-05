@@ -13,15 +13,15 @@ pipeline {
 
     stages {
 	   stage('Build Configuration') {
-		when {
-			expression {
-				return env.BRANCH_NAME != "master"
+			when {
+				expression {
+					return env.BRANCH_NAME != "master"
+				}
 			}
-           }
-		   steps {
-			SERVICE_PORT=81
-		   }
-	   }
+			steps {
+				SERVICE_PORT=81
+			}
+		}
 
        stage('Database Migration') {
             steps {
