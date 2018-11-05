@@ -14,7 +14,9 @@ pipeline {
     stages {
 	   stage('Build Configuration') {
 		when {
-			return env.BRANCH_NAME != "master"
+			expression {
+				return env.BRANCH_NAME != "master"
+			}
            }
 		   steps {
 			SERVICE_PORT=81
