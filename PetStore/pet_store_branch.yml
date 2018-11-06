@@ -46,3 +46,8 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+        env:
+          - name: DBNAME
+            value: petstore_branch
+          - name: DBHOST
+            value: petstore_master
