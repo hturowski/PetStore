@@ -55,7 +55,7 @@ pipeline {
             steps {
 				dir("Ruby") {
 					bat "ruby parse_template.rb > ${env.NAMESPACE}_deployment.yml"
-					bat "kubectl --kubeconfig ${env.KUBECONFIG} update -f ${env.NAMESPACE}_deployment.yml"
+					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f ${env.NAMESPACE}_deployment.yml"
 				}
 				
             }
