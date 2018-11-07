@@ -1,6 +1,7 @@
 def getServicePort()
 {
-	if($env.BRANCH_NAME == "master") {
+	def branchName = "${env.BRANCH_NAME}"
+	if(branchName == "master") {
 		return "81"
 	}
 	else {
