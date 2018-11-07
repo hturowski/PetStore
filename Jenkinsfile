@@ -2,7 +2,7 @@ pipeline {
     agent any
 	environment{
 		SERVICE_NAME="petstore"
-		DOCKER_NAME="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
+		DOCKER_IMAGE="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
 		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
