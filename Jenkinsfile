@@ -8,7 +8,7 @@ pipeline {
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
 		NAMESPACE="${env.SERVICE_NAME}-${env.BRANCH_NAME}"
-        SERVICE_PORT="80"
+        EXTERNAL_PORT="80"
 		FEATURE_PORT="81"
 		MASTER_PORT="82"
 	}
@@ -23,7 +23,7 @@ pipeline {
 			steps {
 				echo 'Configuring build..'
 				script {
-					env.SERVICE_PORT=env.FEATURE_PORT
+					env.EXTERNAL_PORT=env.FEATURE_PORT
 				}
 			}
 		}
