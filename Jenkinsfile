@@ -54,6 +54,7 @@ pipeline {
         stage('Deploy') {
             steps {
 				dir("Ruby") {
+				echo "External Port: ${env.EXTERNAL_PORT}"
 					bat "ruby parse_template.rb > ${env.NAMESPACE}_deployment.yml"
 					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f ${env.NAMESPACE}_deployment.yml"
 				}
