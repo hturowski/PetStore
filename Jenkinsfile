@@ -9,8 +9,8 @@ pipeline {
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
 		NAMESPACE="${env.SERVICE_NAME}-${env.BRANCH_NAME}"
         EXTERNAL_PORT="80"
-		FEATURE_PORT="81"
-		MASTER_PORT="82"
+		FEATURE_PORT="82"
+		MASTER_PORT="81"
 	}
 
     stages {
