@@ -47,7 +47,7 @@ pipeline {
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
-				bat "docker build -t ${env.DOCKERNAME} ."
+				bat "docker build -t ${env.DOCKER_IMAGE} ."
             }
         }
 
