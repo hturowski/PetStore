@@ -51,17 +51,13 @@ pipeline {
             }
         }
 
-        // stage('Configure Namespace') {
-        //     steps {
-		// 		bat "kubectl --kubeconfig ${env.KUBECONFIG} create namespace ${env.NAMESPACE}"
-		// 	}
-        // }
-
         stage('Deploy') {
             steps {
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICE_NAME} DBNAME=${env.DBNAME} -n ${env.NAMESPACE}"
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICE_NAME} DBHOST=${env.KUBEDBHOST} -n ${env.NAMESPACE}"
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set image deployments/${env.SERVICE_NAME} ${env.SERVICE_NAME}=${env.DOCKERNAME} -n ${env.NAMESPACE}"
+				dir("Ruby") {
+					bat "ruby parse_template.rb > ${env.NAMESPACE}_deployment.yml"
+					bat "kubectl --kubeconfig ${env.KUBECONFIG} update -f ${env.NAMESPACE}_deployment.yml"
+				}
+				
             }
         }
 
@@ -73,7 +69,7 @@ pipeline {
 			post {
 				failure {
 					echo 'Rolling back..'
-					bat "kubectl rollout undo deployments/${env.SERVICE_NAME} -n ${env.NAMESPACE}"
+					bat "kubectl --kubeconfig ${env.KUBECONFIG} rollout undo deployments/${env.SERVICE_NAME} -n ${env.NAMESPACE}"
 				}
 			}
         }
