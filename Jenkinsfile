@@ -1,3 +1,8 @@
+def getServicePort()
+{
+	return "82"
+}
+
 pipeline {
     agent any
 	environment{
@@ -8,7 +13,7 @@ pipeline {
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
 		NAMESPACE="${env.SERVICE_NAME}-${env.BRANCH_NAME}"
-        EXTERNAL_PORT="80"
+        EXTERNAL_PORT= getServicePort()
 		FEATURE_PORT="82"
 		MASTER_PORT="81"
 	}
