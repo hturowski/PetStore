@@ -1,40 +1,3 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{SERVICE_NAME}}-{{BRANCH_NAME}}
-
----
-
-apiVersion: v1
-kind: Secret
-metadata:
-  name: {{DBCREDENTIALS}}
-  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
-type: Opaque
-data:
-  dbusername: cGV0cw==
-  dbpassword: cGV0cw==
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{SERVICE_NAME}}
-  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
-  labels:
-    run: {{SERVICE_NAME}}
-spec:
-  ports:
-    - port: {{EXTERNAL_PORT}}
-      protocol: TCP
-      targetPort: 80
-  selector:
-    run: {{SERVICE_NAME}}
-  type: LoadBalancer
-
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -66,10 +29,10 @@ spec:
           - name: DBUSERNAME
             valueFrom:
               secretKeyRef: 
-                name: {{DBCREDENTIALS}}
+                name: dbcredentials
                 key: dbusername
           - name: DBPASSWORD
             valueFrom:
               secretKeyRef: 
-                name: {{DBCREDENTIALS}}
+                name: dbcredentials
                 key: dbpassword

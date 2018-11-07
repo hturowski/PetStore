@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+  name: petstore-feature
 
 ---
 
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{DBCREDENTIALS}}
-  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+  name: dbcredentials
+  namespace: petstore-feature
 type: Opaque
 data:
   dbusername: cGV0cw==
@@ -20,17 +20,17 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{SERVICE_NAME}}
-  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+  name: petstore
+  namespace: petstore-feature
   labels:
-    run: {{SERVICE_NAME}}
+    run: petstore
 spec:
   ports:
-    - port: {{EXTERNAL_PORT}}
+    - port: 82
       protocol: TCP
       targetPort: 80
   selector:
-    run: {{SERVICE_NAME}}
+    run: petstore
   type: LoadBalancer
 
 ---
@@ -38,38 +38,38 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{SERVICE_NAME}}
-  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+  name: petstore
+  namespace: petstore-feature
   labels:
-    run: {{SERVICE_NAME}}
+    run: petstore
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: {{SERVICE_NAME}}
+      run: petstore
   template:
     metadata:
       labels:
-        run: {{SERVICE_NAME}}
+        run: petstore
     spec:
       containers:
-      - name: {{SERVICE_NAME}}
-        image: {{DOCKER_IMAGE}}
+      - name: petstore
+        image: petstore_feature:35
         ports:
         - containerPort: 80
           protocol: TCP
         env:
           - name: DBNAME
-            value: {{BRANCH_DATABASE_NAME}}
+            value: petstore_feature
           - name: DBHOST
             value: petstore-mysql.default.svc.cluster.local
           - name: DBUSERNAME
             valueFrom:
               secretKeyRef: 
-                name: {{DBCREDENTIALS}}
+                name: dbcredentials
                 key: dbusername
           - name: DBPASSWORD
             valueFrom:
               secretKeyRef: 
-                name: {{DBCREDENTIALS}}
+                name: dbcredentials
                 key: dbpassword

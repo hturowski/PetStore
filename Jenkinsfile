@@ -1,13 +1,13 @@
 pipeline {
     agent any
 	environment{
-		DOCKERNAME="petstore_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
-		DBNAME="petstore_${env.BRANCH_NAME}"
+		SERVICE_NAME="petstore"
+		DOCKER_NAME="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
+		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
-		NAMESPACE="${env.SERVICENAME}-${env.BRANCH_NAME}"
-		SERVICENAME="petstore"
+		NAMESPACE="${env.SERVICE_NAME}-${env.BRANCH_NAME}"
         SERVICE_PORT="80"
 		FEATURE_PORT="81"
 		MASTER_PORT="82"
@@ -59,9 +59,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICENAME} DBNAME=${env.DBNAME} -n ${env.NAMESPACE}"
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICENAME} DBHOST=${env.KUBEDBHOST} -n ${env.NAMESPACE}"
-				bat "kubectl --kubeconfig ${env.KUBECONFIG} set image deployments/${env.SERVICENAME} ${env.SERVICENAME}=${env.DOCKERNAME} -n ${env.NAMESPACE}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICE_NAME} DBNAME=${env.DBNAME} -n ${env.NAMESPACE}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set env deployments/${env.SERVICE_NAME} DBHOST=${env.KUBEDBHOST} -n ${env.NAMESPACE}"
+				bat "kubectl --kubeconfig ${env.KUBECONFIG} set image deployments/${env.SERVICE_NAME} ${env.SERVICE_NAME}=${env.DOCKERNAME} -n ${env.NAMESPACE}"
             }
         }
 
@@ -73,7 +73,7 @@ pipeline {
 			post {
 				failure {
 					echo 'Rolling back..'
-					bat "kubectl rollout undo deployments/${env.SERVICENAME} -n ${env.NAMESPACE}"
+					bat "kubectl rollout undo deployments/${env.SERVICE_NAME} -n ${env.NAMESPACE}"
 				}
 			}
         }

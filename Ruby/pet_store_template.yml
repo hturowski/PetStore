@@ -8,7 +8,7 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{DBCREDENTIALS}}
+  name: dbcredentials
   namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
 type: Opaque
 data:
@@ -66,10 +66,10 @@ spec:
           - name: DBUSERNAME
             valueFrom:
               secretKeyRef: 
-                name: {{DBCREDENTIALS}}
+                name: dbcredentials
                 key: dbusername
           - name: DBPASSWORD
             valueFrom:
               secretKeyRef: 
-                name: {{DBCREDENTIALS}}
+                name: dbcredentials
                 key: dbpassword
