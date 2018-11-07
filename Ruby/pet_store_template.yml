@@ -12,8 +12,8 @@ metadata:
   namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
 type: Opaque
 data:
-  dbusername: cGV0cw==
-  dbpassword: cGV0cw==
+  dbusername: cm9vdA==
+  dbpassword: cm9vdA==
 
 ---
 

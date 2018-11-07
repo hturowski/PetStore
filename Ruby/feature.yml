@@ -12,8 +12,8 @@ metadata:
   namespace: petstore-feature
 type: Opaque
 data:
-  dbusername: cGV0cw==
-  dbpassword: cGV0cw==
+  dbusername: cm9vdA==
+  dbpassword: cm9vdA==
 
 ---
 
@@ -43,7 +43,7 @@ metadata:
   labels:
     run: petstore
 spec:
-  replicas: 1  
+  replicas: 4
   selector:
     matchLabels:
       run: petstore
@@ -54,16 +54,22 @@ spec:
     spec:
       containers:
       - name: petstore
-        image: petstore_feature:35
+        image: petstore_feature:38
         ports:
         - containerPort: 80
           protocol: TCP
         env:
           - name: DBNAME
-            value: petstore
+            value: petstore_feature
           - name: DBHOST
             value: petstore-mysql.default.svc.cluster.local
           - name: DBUSERNAME
-            value: root
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbusername
           - name: DBPASSWORD
-            value: root
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbpassword
