@@ -1,6 +1,11 @@
 def getServicePort()
 {
-	return "82"
+	if($env.BRANCH_NAME == "master") {
+		return "81"
+	}
+	else {
+		return "82"
+	}
 }
 
 pipeline {
