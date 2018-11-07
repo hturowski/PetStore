@@ -23,7 +23,7 @@ pipeline {
 			steps {
 				echo 'Configuring build..'
 				script {
-					env.EXTERNAL_PORT=env.FEATURE_PORT
+					EXTERNAL_PORT=FEATURE_PORT
 				}
 			}
 		}
