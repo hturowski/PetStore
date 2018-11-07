@@ -14,7 +14,7 @@ pipeline {
 	environment{
 		SERVICE_NAME="petstore"
 		DOCKER_IMAGE="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
-		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
+		BRANCH_DATABASE_NAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
