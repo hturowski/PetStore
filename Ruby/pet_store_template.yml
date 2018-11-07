@@ -43,7 +43,7 @@ metadata:
   labels:
     run: {{SERVICE_NAME}}
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       run: {{SERVICE_NAME}}
