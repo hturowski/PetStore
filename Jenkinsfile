@@ -67,7 +67,6 @@ pipeline {
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
         }
-/*
        stage('Production Database Migration') {
 			when { branch 'master' }
             steps {
@@ -88,6 +87,5 @@ pipeline {
 				}
 			}
 		}
-		*/
     }
 }
