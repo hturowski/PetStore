@@ -62,15 +62,10 @@ pipeline {
 				retry(3)
 			}
             steps {
+				sleep(10)
                 echo 'Integration Testing..'
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
-			post {
-				failure {
-					echo 'Rolling back..'
-					bat "kubectl --kubeconfig ${env.KUBECONFIG} rollout undo deployments/${env.SERVICE_NAME} -n ${env.NAMESPACE}"
-				}
-			}
         }
     }
 }
