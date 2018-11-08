@@ -86,7 +86,6 @@ pipeline {
 					bat "ruby parse_production_template.rb > prod_deployment.yml"
 					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f prod_deployment.yml"
 				}
-
 			}
 		}
     }
