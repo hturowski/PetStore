@@ -1,6 +1,29 @@
+def getExternalPort()
+{
+	def branchName = "${env.BRANCH_NAME}"
+	if(branchName == "master") {
+		return "81"
+	}
+	else {
+		return "82"
+	}
+}
+
 pipeline {
     agent any
+	environment {
+		SERVICE_NAME="petstore"
+		DOCKER_IMAGE="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
+		BRANCH_DATABASE_NAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
+		DBHOST="localhost"
+		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
+		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
+		NAMESPACE="${env.SERVICE_NAME}-${env.BRANCH_NAME}"
+        EXTERNAL_PORT = getExternalPort()
+	}
+
     stages {
+
        stage('Database Migration') {
             steps {
                 echo 'Applying database migrations..'
@@ -9,6 +32,7 @@ pipeline {
 				}
             }
         }
+
         stage('Unit Tests') {
             steps {
                 echo 'Unit testing..'
@@ -19,15 +43,24 @@ pipeline {
         stage('Build Docker Container') {
             steps {
                 echo 'Building..'
-				bat "docker build -t petstore:${env.BUILD_NUMBER} ."
+				bat "docker build -t ${env.DOCKER_IMAGE} ."
             }
         }
+
         stage('Deploy') {
             steps {
-				bat "kubectl --kubeconfig c:\\Users\\hturowski\\.kube\\config set image deployments/rest-test rest-test=petstore:${env.BUILD_NUMBER}"
+			    echo 'Deploying service..'
+				dir("Ruby") {
+					bat "ruby parse_template.rb > ${env.NAMESPACE}_deployment.yml"
+					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f ${env.NAMESPACE}_deployment.yml"
+				}
             }
         }
+
         stage('Integration Test') {
+			options {
+				retry(3)
+			}
             steps {
                 echo 'Integration Testing..'
                 bat "dotnet test ./PetStore.Integration.Tests"
@@ -35,7 +68,7 @@ pipeline {
 			post {
 				failure {
 					echo 'Rolling back..'
-					bat "kubectl rollout undo deployments/rest-test"
+					bat "kubectl --kubeconfig ${env.KUBECONFIG} rollout undo deployments/${env.SERVICE_NAME} -n ${env.NAMESPACE}"
 				}
 			}
         }

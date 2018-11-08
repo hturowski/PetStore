@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace PetStore
 {
-    [Route("pet")]
+    [Route("pets")]
     public class PetController : Controller
     {
         [HttpGet("{id}")]

@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: petstore-master
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dbcredentials
+  namespace: petstore-master
+type: Opaque
+data:
+  dbusername: cGV0cw==
+  dbpassword: cGV0cw==
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: petstore
+  namespace: petstore-master
+  labels:
+    run: petstore
+spec:
+  ports:
+    - port: 81
+      protocol: TCP
+      targetPort: 80
+  selector:
+    run: petstore
+  type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petstore
+  namespace: petstore-master
+  labels:
+    run: petstore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: petstore
+  template:
+    metadata:
+      labels:
+        run: petstore
+    spec:
+      containers:
+      - name: petstore
+        image: petstore_feature:35
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+          - name: DBNAME
+            value: petstore_master
+          - name: DBHOST
+            value: petstore-mysql.default.svc.cluster.local
+          - name: DBUSERNAME
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbusername
+          - name: DBPASSWORD
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbpassword

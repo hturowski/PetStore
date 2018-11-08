@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: branchns
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: pet-service-branch
+  namespace: branchns
+  labels:
+    run: pet-service-branch
+spec:
+  ports:
+    - port: 81
+      protocol: TCP
+      targetPort: 80
+  selector:
+    run: pet-service-branch
+  type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pet-service-branch
+  namespace: branchns
+  labels:
+    run: pet-service-branch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: pet-service-branch
+  template:
+    metadata:
+      labels:
+        run: pet-service-branch
+    spec:
+      containers:
+      - name: pet-service-branch
+        image: petstore_feature:17
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+          - name: DBNAME
+            value: petstore_branch
+          - name: DBHOST
+            value: petstore_master

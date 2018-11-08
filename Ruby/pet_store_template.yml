@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dbcredentials
+  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+type: Opaque
+data:
+  dbusername: cm9vdA==
+  dbpassword: cm9vdA==
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{SERVICE_NAME}}
+  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+  labels:
+    run: {{SERVICE_NAME}}
+spec:
+  ports:
+    - port: {{EXTERNAL_PORT}}
+      protocol: TCP
+      targetPort: 80
+  selector:
+    run: {{SERVICE_NAME}}
+  type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{SERVICE_NAME}}
+  namespace: {{SERVICE_NAME}}-{{BRANCH_NAME}}
+  labels:
+    run: {{SERVICE_NAME}}
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      run: {{SERVICE_NAME}}
+  template:
+    metadata:
+      labels:
+        run: {{SERVICE_NAME}}
+    spec:
+      containers:
+      - name: {{SERVICE_NAME}}
+        image: {{DOCKER_IMAGE}}
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+          - name: DBNAME
+            value: {{BRANCH_DATABASE_NAME}}
+          - name: DBHOST
+            value: petstore-mysql.default.svc.cluster.local
+          - name: DBUSERNAME
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbusername
+          - name: DBPASSWORD
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbpassword
