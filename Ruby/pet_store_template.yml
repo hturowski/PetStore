@@ -60,7 +60,7 @@ spec:
           protocol: TCP
         env:
           - name: DBNAME
-            value: {{BRANCH_DATABASE_NAME}}
+            value: {{DBNAME}}
           - name: DBHOST
             value: petstore-mysql.default.svc.cluster.local
           - name: DBUSERNAME
