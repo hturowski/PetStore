@@ -62,7 +62,7 @@ pipeline {
 				retry(3)
 			}
             steps {
-				currentBuild.result = 'SUCCESS'
+				sleep(3)
                 echo 'Integration Testing..'
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
