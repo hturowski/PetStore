@@ -14,7 +14,7 @@ pipeline {
 	environment {
 		SERVICE_NAME="petstore"
 		DOCKER_IMAGE="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
-		BRANCH_DATABASE_NAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
+		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
@@ -56,7 +56,7 @@ pipeline {
 				}
             }
         }
-
+		
         stage('Integration Test') {
 			options {
 				retry(3)
@@ -67,19 +67,26 @@ pipeline {
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
         }
+
        stage('Production Database Migration') {
-			when { branch 'master' }
+			when { 
+				beforeAgent true
+				branch 'master'
+			}
             steps {
                 echo 'Applying database migrations..'
 				dir("PetStore") {
-					bat "set BRANCH_DATABASE_NAME=${env.SERVICE_NAME}"
+					bat "set DBNAME=${env.SERVICE_NAME}"
                 	bat "dotnet ef database update"
 				}
             }
         }
 
 		stage('Production Deployment') {
-			when { branch 'master' }
+			when { 
+				beforeAgent true
+				branch 'master'
+			}
 			steps {
 				dir("Ruby") {
 					bat "ruby parse_production_template.rb > prod_deployment.yml"
