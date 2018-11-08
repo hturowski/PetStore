@@ -13,7 +13,7 @@ namespace PetStore.DAO
 	    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	    {
             var dbHost = Environment.GetEnvironmentVariable("DBHOST") ?? "localhost";
-            var dbName = Environment.GetEnvironmentVariable("BRANCH_DATABASE_NAME") ?? "pets";
+            var dbName = Environment.GetEnvironmentVariable("BRANCH_DATABASE_NAME") ?? "petstore";
             var dbUsername = Environment.GetEnvironmentVariable("DBUSERNAME") ?? "root";
             var dbPassword = Environment.GetEnvironmentVariable("DBPASSWORD") ?? "root";
 
