@@ -69,7 +69,7 @@ pipeline {
         }
 
        stage('Production Database Migration') {
-			when { branch 'master] }
+			when { branch 'master' }
             steps {
                 echo 'Applying database migrations..'
 				dir("PetStore") {
@@ -80,7 +80,7 @@ pipeline {
         }
 
 		stage('Production Deployment') {
-			when { branch 'master] }
+			when { branch 'master' }
 			steps {
 				dir("Ruby") {
 					bat "ruby parse_production_template.rb > prod_deployment.yml"
