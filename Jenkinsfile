@@ -61,7 +61,6 @@ pipeline {
 			options {
 				retry(3)
 			}
-			sleep 3s
             steps {
                 echo 'Integration Testing..'
                 bat "dotnet test ./PetStore.Integration.Tests"
