@@ -67,5 +67,25 @@ pipeline {
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
         }
+       stage('Production Database Migration') {
+			when { branch 'master' }
+            steps {
+                echo 'Applying database migrations..'
+				dir("PetStore") {
+					bat "set BRANCH_DATABASE_NAME=${env.SERVICE_NAME}"
+                	bat "dotnet ef database update"
+				}
+            }
+        }
+
+		stage('Production Deployment') {
+			when { branch 'master' }
+			steps {
+				dir("Ruby") {
+					bat "ruby parse_production_template.rb > prod_deployment.yml"
+					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f prod_deployment.yml"
+				}
+			}
+		}
     }
 }
