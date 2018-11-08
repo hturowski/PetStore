@@ -58,9 +58,11 @@ pipeline {
         }
 
         stage('Integration Test') {
+			options {
+				retry(3)
+			}
+			sleep 3s
             steps {
-				echo 'Waiting for pod rollout..'
-				sleep 5s
                 echo 'Integration Testing..'
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
