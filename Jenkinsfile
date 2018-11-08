@@ -1,4 +1,4 @@
-def getServicePort()
+def getExternalPort()
 {
 	def branchName = "${env.BRANCH_NAME}"
 	if(branchName == "master") {
@@ -11,7 +11,7 @@ def getServicePort()
 
 pipeline {
     agent any
-	environment{
+	environment {
 		SERVICE_NAME="petstore"
 		DOCKER_IMAGE="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
 		BRANCH_DATABASE_NAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
@@ -19,25 +19,10 @@ pipeline {
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
 		NAMESPACE="${env.SERVICE_NAME}-${env.BRANCH_NAME}"
-        EXTERNAL_PORT= getServicePort()
-		FEATURE_PORT="82"
-		MASTER_PORT="81"
+        EXTERNAL_PORT = getExternalPort()
 	}
 
     stages {
-	   stage('Build Configuration') {
-			when {
-				expression {
-					return env.BRANCH_NAME != "master"
-				}
-			}
-			steps {
-				echo 'Configuring build..'
-				script {
-					EXTERNAL_PORT=FEATURE_PORT
-				}
-			}
-		}
 
        stage('Database Migration') {
             steps {
@@ -64,12 +49,11 @@ pipeline {
 
         stage('Deploy') {
             steps {
+			    echo 'Deploying service..'
 				dir("Ruby") {
-				echo "External Port: ${env.EXTERNAL_PORT}"
 					bat "ruby parse_template.rb > ${env.NAMESPACE}_deployment.yml"
 					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f ${env.NAMESPACE}_deployment.yml"
 				}
-				
             }
         }
 
