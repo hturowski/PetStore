@@ -19,7 +19,7 @@ namespace Tests
         {
             servicePort = System.Environment.GetEnvironmentVariable("EXTERNAL_PORT") ?? "80";
             serviceHost = $"http://localhost:{servicePort}";
-            System.Console.WriteLine($"Host: ${serviceHost}\nPort: ${servicePort}");
+            System.Console.WriteLine($"Test Address: {serviceHost}");
         }
 
         [Test]
