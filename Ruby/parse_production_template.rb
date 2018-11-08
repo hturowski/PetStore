@@ -6,7 +6,7 @@ view = Mustache.new
 view[:SERVICE_NAME]         = ENV['SERVICE_NAME']
 view[:BRANCH_NAME]          = ENV['BRANCH_NAME']
 view[:DOCKER_IMAGE]         = ENV['DOCKER_IMAGE']
-view[:BRANCH_DATABASE_NAME] = ENV['BRANCH_DATABASE_NAME']
+view[:DBNAME]               = ENV['DBNAME']
 view[:EXTERNAL_PORT]        = ENV['EXTERNAL_PORT']
 
 puts view.render
