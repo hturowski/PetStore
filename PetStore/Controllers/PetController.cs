@@ -30,7 +30,7 @@ namespace PetStore
         {
             using (var db = new PetStoreContext())
             {
-                db.Pets.Add(new Pet(2, "Zoey", "Cat"));
+                db.Pets.Add(new Pet(2, "Amos", "Cat"));
                 db.SaveChanges();
             }
 
