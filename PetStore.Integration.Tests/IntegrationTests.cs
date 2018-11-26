@@ -17,7 +17,7 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            servicePort = System.Environment.GetEnvironmentVariable("EXTERNAL_PORT") ?? "80";
+            servicePort = System.Environment.GetEnvironmentVariable("EXTERNAL_PORT") ?? "8081";
             serviceHost = $"http://localhost:{servicePort}";
             System.Console.WriteLine($"Test Address: {serviceHost}");
         }
