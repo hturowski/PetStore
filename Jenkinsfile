@@ -17,7 +17,7 @@ pipeline {
 		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
-		KUBECONFIG="c:\\Users\\hturowski\\.kube\\config"
+		KUBECONFIG="c:\\.kube\\config"
 		NAMESPACE="${env.BRANCH_NAME}"
         EXTERNAL_PORT = getExternalPort()
 	}
