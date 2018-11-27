@@ -10,6 +10,7 @@ namespace PetStore.Migrations
             using (var db = new PetStoreContext())
             {
                 db.Pets.Add(new Pet(1, "Zoey", "Cat"));
+                db.Pets.Add(new Pet(2, "Norman", "Dog"));
                 db.SaveChanges();
             }
         }
