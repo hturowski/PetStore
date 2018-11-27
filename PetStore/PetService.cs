@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore;
 using System.Collections;
+using PetStore.Repository;
 
 namespace PetStore
 {
@@ -18,8 +19,8 @@ namespace PetStore
             WebHost.CreateDefaultBuilder(args)
             .UseStartup<PetService>();
 
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
+            services.AddTransient<IPetRepository, PetRepository>();
             services.AddMvc();
         }
 

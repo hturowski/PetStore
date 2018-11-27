@@ -1,35 +1,36 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetStore.DAO;
-using System.Linq;
-using System.Collections;
+using PetStore.Repository;
 
 namespace PetStore
 {
     [Route("pets")]
     public class PetController : Controller
     {
+        private IPetRepository PetRepo { get; set; }
+
+        public PetController(IPetRepository petRepo) {
+            PetRepo = petRepo;
+        }
+
+        [HttpGet]
+        public IActionResult Get() {
+            var pets = PetRepo.GetAllPets();
+            return Ok(pets);
+        }
+
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
-        {
-            using (var db = new PetStoreContext())
-            {
-                try {
-                    var animal = db.Pets
-                        .Single(b => b.Id == id);
-                    return Ok(animal);
-                }
-                catch(System.Exception e)
-                {
-                    return NotFound(e);
-                }
+        public IActionResult Get(int id) {
+            var animal = PetRepo.GetPet(id);
+            if (animal != null) {
+                return Ok(animal);
             }
+            return NotFound();
         }
 
         [HttpPut()]
-        public IActionResult Put(int id)
-        {
-            using (var db = new PetStoreContext())
-            {
+        public IActionResult Put(int id) {
+            using (var db = new PetStoreContext())  {
                 db.Pets.Add(new Pet(2, "Amos", "Cat"));
                 db.SaveChanges();
             }
@@ -38,37 +39,21 @@ namespace PetStore
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Pet newPet)
-        {
-            if (!ModelState.IsValid)
-            {
+        public IActionResult Post([FromBody]Pet newPet) {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
-            using (var db = new PetStoreContext())
-            {
-                db.Pets.Add(newPet);
-                db.SaveChanges();
-            }
+
+            PetRepo.AddPet(newPet);
             return Ok(newPet);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            using (var db = new PetStoreContext())
-            {
-                try
-                {
-                    var toRemove = db.Pets.Single(p => p.Id == id);
-                    db.Pets.Remove(toRemove);
-                    db.SaveChanges();
-                }
-                catch(System.Exception e )
-                {
-                    return NotFound(e);
-                }
+        public IActionResult Delete(int id) {
+            if (PetRepo.DeletePet(id)) {
+                return Ok();
             }
-            return Ok();
+            return NotFound();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Tests
         [SetUp]
         public void Setup()
         {
-            servicePort = System.Environment.GetEnvironmentVariable("EXTERNAL_PORT") ?? "80";
+            servicePort = System.Environment.GetEnvironmentVariable("EXTERNAL_PORT") ?? "8081";
             serviceHost = $"http://localhost:{servicePort}";
             System.Console.WriteLine($"Test Address: {serviceHost}");
         }
@@ -30,6 +30,25 @@ namespace Tests
             using (var client = new HttpClient())
             {
                 var serviceURI = $"{serviceHost}/pets/1";
+                var response = client.GetAsync(serviceURI).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = response.Content;
+                    responseString = responseContent.ReadAsStringAsync().Result;
+                }
+            }
+            Assert.AreEqual(expected, responseString);
+        }
+
+        [Test]
+        public static void GetAllPets()
+        {
+            string expected = "[{\"id\":1,\"name\":\"Zoey\",\"type\":\"Cat\"},{\"id\":2,\"name\":\"Norman\",\"type\":\"Dog\"}]";
+            string responseString = "";
+            using (var client = new HttpClient())
+            {
+                var serviceURI = $"{serviceHost}/pets";
                 var response = client.GetAsync(serviceURI).Result;
 
                 if (response.IsSuccessStatusCode)
