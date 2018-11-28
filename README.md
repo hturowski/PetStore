@@ -2,7 +2,7 @@
 
 ## Overview
 A simple REST service meant to be deployed using Kubernetes.
-This services requires a MySQL instance which can be deployed using the included PetStore-MySQL.yml file
+This services requires a MySQL instance which can be deployed using the included `PetStore-MySQL.yml` file
 
 ### A Warning About Port Conflicts
 You will be installing services which will run on ports `80`, `8080`, and `3306`.
@@ -22,6 +22,9 @@ Use `docker images` to verify that a container named `nginx` appears in your loc
 
 Remove the nginx deployment using `kubectl delete deployment nginx`.
 
+After you have Kubernetes working, you'll need to copy (not move) the `.kube` folder in your user's home directory to the root of your `C` drive.
+After the copy, Jenkins will use the Kubernetes configuration file at `c:\.kube\config` to manage your local Kubernetes cluster.
+
 ### MySQL Workbench
 **Do not install MySQL on your local workstation.**
 If you have MySQL installed, stop the service and set it to start manually.
@@ -36,14 +39,27 @@ Install them now.
 
 ### Jenkins
 You will need a local Jenkins instance to perform automated deployments of your service.
-Install [Jenkins for Windows](https://jenkins.io/download/) using the default settings.
+Install [Jenkins for Windows](https://jenkins.io/download/) and make sure you choose to install the `Multibranch Pipeline` plugin.
+You can leave the other options alone, or remove things you know you won't need like `SVN` support.
 Jenkins will install as a Windows service and start automatically.
 Once installed, you will find Jenkins at `http://localhost:8080/` 
 
-## Deploy MySQL to your Kubernetes Cluster
+### Ruby
+The deployment process uses a Ruby script to generate Kubernetes deployment files.
+You will need to have Ruby installed and available to all users on your system.
+This means that `ruby.exe` needs to be in the system's `PATH`.
+After you clone the repository, open a terminal window in the `Ruby` directory and run `ruby install bundler` followed by `bundle install`.
 
+## Deploy MySQL to your Kubernetes Cluster
 In the PetStore subdirectory there is a file named `PetStore-MySQL.yml`.
 This contains deployment information for the MySQL database which will be the back end for our service.
 From the PetStore subdirectory run `kubectl create -f PetStore-MySQL.yml` to create the database instance.
 The database will be accessible to your local machine on port `3306`, with username `root` and password `root` (I know... please don't send me emails).
 Launch MySQL Workbench and verify that you can connect to the database.
+
+## Configure Jenkins to Monitor the Repository
+Open Jenkins at http://localhost:8080/ and create a `New Item`.
+Choose a name for your job and select `Multibranch Pipeline` then click `Ok`.
+In the `Branch Sources` section, set the Project Repository to this repository's address.
+Add your GitHub credentials and select them in the `Credentials` dropdown.
+Click `Save`.
