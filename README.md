@@ -20,7 +20,7 @@ This will pull an nginx Docker image from the official Docker repository and sto
 Kubernetes will then deploy it to your local Kubernetes cluster.
 Use `docker images` to verify that a container named `nginx` appears in your local repository, then `kubectl get deployments` and `kubectl get pods` to verify that the nginx service is deployed to Kubernetes.
 
-Remove the nginx deployment using `kubectl delete deployment nginx`.
+Remove the nginx deployment using `kubectl delete deployment nginx` and `kubectl delete service nginx`.
 
 After you have Kubernetes working, you'll need to copy (not move) the `.kube` folder in your user's home directory to the root of your `C` drive.
 After the copy, Jenkins will use the Kubernetes configuration file at `c:\.kube\config` to manage your local Kubernetes cluster.
