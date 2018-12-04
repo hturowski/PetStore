@@ -31,7 +31,7 @@ namespace PetStore
         [HttpPut()]
         public IActionResult Put(int id) {
             using (var db = new PetStoreContext())  {
-                db.Pets.Add(new Pet(2, "Amos", "Cat"));
+                db.Pets.Add(new Pet(100, "Perry", "Cat"));
                 db.SaveChanges();
             }
 
