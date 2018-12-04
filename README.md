@@ -2,10 +2,19 @@
 
 ## Overview
 A simple REST service meant to be deployed using Kubernetes.
-This services requires a MySQL instance which can be deployed using the included `PetStore-MySQL.yml` file
+This services requires a MySQL instance which can be deployed using the included `PetStore-MySQL.yml` file.
+
+### What This Proof of Concept Doesn't Do (Yet)
+#### There is no automatic cleanup
+When a branch is deleted, the Kubernetes namespace and related database are not removed.
+#### There is no Kubernetes ingress controller
+Currently the `default` namespace is production, the `master` namespace is for integration testing, and the branch namespace is for feature development.
+Each runs on its own port, with `default` on port 80, `master` on port `81` and all branches on port `82`.
+All services should be running on port `80` with an ingress controller routing traffic appropriately, probably based on header information included in the namespace.
+This means that in the current state, this proof of concept only supports one feature branch, and manual cleanup is required before a new one can be deployed.
 
 ### A Warning About Port Conflicts
-You will be installing services which will run on ports `80`, `8080`, and `3306`.
+You will be installing services which will run on ports `80`, `81`, `82`, `8080`, and `3306`.
 If you already have services running on any of these ports, you will need to stop them in order for things to work.
 
 ## Prerequisites for Local Setup on Windows 10
