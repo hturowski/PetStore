@@ -72,11 +72,13 @@ pipeline {
 			when { 
 				beforeAgent true
 				branch 'master'
+				}
+			environment {
+					DBNAME="${env.SERVICE_NAME}"
 			}
             steps {
                 echo 'Applying database migrations..'
 				dir("PetStore") {
-					env.DBNAME=${env.SERVICE_NAME}
                 	bat "dotnet ef database update"
 				}
             }
