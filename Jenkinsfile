@@ -79,7 +79,6 @@ pipeline {
             steps {
                 echo 'Applying database migrations..'
 				dir("PetStore") {
-					env.DBNAME=${env.SERVICE_NAME}
                 	bat "dotnet ef database update"
 				}
             }
