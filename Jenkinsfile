@@ -9,7 +9,7 @@ def getExternalPort()
 	}
 }
 
-def getNamespace(string service)
+def getNamespace(service)
 {
 	def branchName = "${env.BRANCH_NAME}"
 	if(branchName == "master") {
