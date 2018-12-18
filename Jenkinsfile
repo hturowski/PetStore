@@ -13,7 +13,7 @@ pipeline {
     agent any
 	environment {
 		SERVICE_NAME="petstore"
-		DOCKER_IMAGE="${SERVICE_NAME}-${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
+		DOCKER_IMAGE="${SERVICE_NAME}-${env.BRANCH_NAME}"
 		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
@@ -43,7 +43,7 @@ pipeline {
         stage('Build Docker Container') {
             steps {
                 echo 'Building docker container'
-				bat "docker build -t ${env.DOCKER_IMAGE} ."
+				bat "docker build -t ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
             }
         }
 
