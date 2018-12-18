@@ -26,7 +26,7 @@ pipeline {
 
        stage('Database Migration') {
             steps {
-                echo 'Applying database migrations..'
+                echo 'Applying database migrations to branch namespace'
 				dir("PetStore") {
                 	bat "dotnet ef database update"
 				}
@@ -35,25 +35,22 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                echo 'Unit testing..'
+                echo 'Running unit tests'
                 bat "dotnet test ./PetStore.Tests"
             }
         }
 
         stage('Build Docker Container') {
             steps {
-                echo 'Building..'
+                echo 'Building docker container'
 				bat "docker build -t ${env.DOCKER_IMAGE} ."
             }
         }
 
         stage('Deploy') {
             steps {
-			    echo 'Deploying service..'
-				dir("Ruby") {
-					bat "ruby parse_template.rb > ${env.NAMESPACE}_deployment.yml"
-					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f ${env.NAMESPACE}_deployment.yml"
-				}
+			    echo 'Deploying service to branch namespace'
+				bat "helm upgrade ${env.SERVICE_NAME}-${env.BRANCH_NAME} --install --set production=false,service.port=${env.EXTERNAL_PORT},service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME},replica_count=1,database.name=${env.DBNAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} --namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} ./petstore-chart"
             }
         }
 		
@@ -63,7 +60,7 @@ pipeline {
 			}
             steps {
 				sleep(10)
-                echo 'Integration Testing..'
+                echo 'Running integration tests on branch'
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
         }
@@ -77,7 +74,7 @@ pipeline {
 					DBNAME="${env.SERVICE_NAME}"
 			}
             steps {
-                echo 'Applying database migrations..'
+                echo 'Applying database migrations to production'
 				dir("PetStore") {
                 	bat "dotnet ef database update"
 				}
@@ -90,10 +87,8 @@ pipeline {
 				branch 'master'
 			}
 			steps {
-				dir("Ruby") {
-					bat "ruby parse_production_template.rb > prod_deployment.yml"
-					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f prod_deployment.yml"
-				}
+				echo 'Deploying service to production'
+				bat "helm upgrade --install --name ${env.SERVICE_NAME} --set production=true,service.port=${env.EXTERNAL_PORT} ./petstore-chart"
 			}
 		}
     }

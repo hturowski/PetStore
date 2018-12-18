@@ -1,29 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: petstore
-  namespace: petstore-feature
+  name: {{.Values.service.name}}
   labels:
-    run: petstore
+    run: 
 spec:
-  replicas: 1
+  replicas: {{.Values.replica_count}}
   selector:
     matchLabels:
-      run: petstore
+      run: {{.Values.service.name}}
   template:
     metadata:
       labels:
-        run: petstore
+        run: {{.Values.service.name}}
     spec:
       containers:
-      - name: petstore
-        image: petstore_feature:35
+      - name: {{.Values.image.name | replace  "_" "-"}}
+        image: {{.Values.image.name}}:{{.Values.image.tag}}
         ports:
-        - containerPort: 80
+        - containerPort: {{.Values.service.port}}
           protocol: TCP
         env:
           - name: DBNAME
-            value: petstore_feature
+            value: {{ if (eq .Values.production true) -}}
+                      {{.Values.database.name}}
+                    {{- else -}}
+                      {{.Values.database.name}}-{{.Values.branch_name}}
+                    {{- end }}
           - name: DBHOST
             value: petstore-mysql.default.svc.cluster.local
           - name: DBUSERNAME
