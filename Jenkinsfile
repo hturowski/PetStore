@@ -16,7 +16,7 @@ def getNamespace()
 		return "master"
 	}
 	else {
-		return "${env.SERVICE_NAME}-${env.BRANCH_NAME}"
+		return "petstore-${env.BRANCH_NAME}"
 	}
 }
 
@@ -62,10 +62,10 @@ pipeline {
         stage('Deploy') {
             steps {
 			    echo 'Deploying service to branch namespace'
-				bat "kubectl create namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} & exit 0"
-				bat "kubectl get secret dbcredentials --namespace default --export -o yaml | kubectl apply --namespace=${env.SERVICE_NAME}-${env.BRANCH_NAME} -f - "
+				bat "kubectl create namespace ${env.NAMESPACE} & exit 0"
+				bat "kubectl get secret dbcredentials --namespace default --export -o yaml | kubectl apply --namespace=${env.NAMESPACE} -f - "
 
-				bat "helm upgrade ${env.SERVICE_NAME}-${env.BRANCH_NAME} --install --set production=false,replica_count=1,service.port=${env.EXTERNAL_PORT},service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME},database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} --namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} ./petstore-chart "
+				bat "helm upgrade ${env.SERVICE_NAME}-${env.BRANCH_NAME} --install --set production=false,replica_count=1,service.port=${env.EXTERNAL_PORT},service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME},database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} --namespace ${env.NAMESPACE} ./petstore-chart "
 			}
         }
 		
