@@ -16,4 +16,3 @@ database:
 image:
   name: petstore_master
   tag: 72
-

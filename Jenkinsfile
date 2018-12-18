@@ -13,9 +13,10 @@ pipeline {
     agent any
 	environment {
 		SERVICE_NAME="petstore"
-		DOCKER_IMAGE="${SERVICE_NAME}-${env.BRANCH_NAME}"
 		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
+
+		DOCKER_IMAGE="${SERVICE_NAME}-${env.BRANCH_NAME}"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\.kube\\config"
 		NAMESPACE="${env.BRANCH_NAME}"
@@ -53,7 +54,7 @@ pipeline {
 				bat "kubectl create namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} & exit 0"
 				bat "kubectl get secret dbcredentials --namespace default --export -o yaml | kubectl apply --namespace=${env.SERVICE_NAME}-${env.BRANCH_NAME} -f - "
 
-				bat "helm upgrade ${env.SERVICE_NAME}-${env.BRANCH_NAME} --install --set production=false,service.port=${env.EXTERNAL_PORT},service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME},replica_count=1,database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} --namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} ./petstore-chart "
+				bat "helm upgrade ${env.SERVICE_NAME}-${env.BRANCH_NAME} --install --set production=false,	replica_count=1, service.port=${env.EXTERNAL_PORT}, service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME}, database.name=${env.SERVICE_NAME}, branch_name=${env.BRANCH_NAME}, image.name=${env.DOCKER_IMAGE}, image.tag=${env.BUILD_NUMBER} --namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} ./petstore-chart "
 			}
         }
 		
@@ -91,7 +92,7 @@ pipeline {
 			}
 			steps {
 				echo 'Deploying service to production'
-				bat "helm upgrade --install --name ${env.SERVICE_NAME} --set production=true,service.port=${env.EXTERNAL_PORT} ./petstore-chart"
+				bat "helm upgrade ${env.SERVICE_NAME} --install --set production=true,replica_count=4,service.port=80, service.name=${env.SERVICE_NAME},database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} ./petstore-chart "
 			}
 		}
     }
