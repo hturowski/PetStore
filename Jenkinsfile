@@ -16,7 +16,7 @@ def getNamespace()
 		return "master"
 	}
 	else {
-		return "${env.SERVICE_NAME}-${env.BRANCH_NAME}"
+		return "petstore-${env.BRANCH_NAME}"
 	}
 }
 
