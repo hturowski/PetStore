@@ -13,9 +13,10 @@ pipeline {
     agent any
 	environment {
 		SERVICE_NAME="petstore"
-		DOCKER_IMAGE="${SERVICE_NAME}_${env.BRANCH_NAME}:${env.BUILD_NUMBER}"
 		DBNAME="${SERVICE_NAME}_${env.BRANCH_NAME}"
 		DBHOST="localhost"
+
+		DOCKER_IMAGE="${SERVICE_NAME}-${env.BRANCH_NAME}"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\.kube\\config"
 		NAMESPACE="${env.BRANCH_NAME}"
@@ -26,7 +27,7 @@ pipeline {
 
        stage('Database Migration') {
             steps {
-                echo 'Applying database migrations..'
+                echo 'Applying database migrations to branch namespace'
 				dir("PetStore") {
                 	bat "dotnet ef database update"
 				}
@@ -35,26 +36,26 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                echo 'Unit testing..'
+                echo 'Running unit tests'
                 bat "dotnet test ./PetStore.Tests"
             }
         }
 
         stage('Build Docker Container') {
             steps {
-                echo 'Building..'
-				bat "docker build -t ${env.DOCKER_IMAGE} ."
+                echo 'Building docker container'
+				bat "docker build -t ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
             }
         }
 
         stage('Deploy') {
             steps {
-			    echo 'Deploying service..'
-				dir("Ruby") {
-					bat "ruby parse_template.rb > ${env.NAMESPACE}_deployment.yml"
-					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f ${env.NAMESPACE}_deployment.yml"
-				}
-            }
+			    echo 'Deploying service to branch namespace'
+				bat "kubectl create namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} & exit 0"
+				bat "kubectl get secret dbcredentials --namespace default --export -o yaml | kubectl apply --namespace=${env.SERVICE_NAME}-${env.BRANCH_NAME} -f - "
+
+				bat "helm upgrade ${env.SERVICE_NAME}-${env.BRANCH_NAME} --install --set production=false,replica_count=1,service.port=${env.EXTERNAL_PORT},service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME},database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} --namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} ./petstore-chart "
+			}
         }
 		
         stage('Integration Test') {
@@ -63,7 +64,7 @@ pipeline {
 			}
             steps {
 				sleep(10)
-                echo 'Integration Testing..'
+                echo 'Running integration tests on branch'
                 bat "dotnet test ./PetStore.Integration.Tests"
             }
         }
@@ -77,7 +78,7 @@ pipeline {
 					DBNAME="${env.SERVICE_NAME}"
 			}
             steps {
-                echo 'Applying database migrations..'
+                echo 'Applying database migrations to production'
 				dir("PetStore") {
                 	bat "dotnet ef database update"
 				}
@@ -90,10 +91,8 @@ pipeline {
 				branch 'master'
 			}
 			steps {
-				dir("Ruby") {
-					bat "ruby parse_production_template.rb > prod_deployment.yml"
-					bat "kubectl --kubeconfig ${env.KUBECONFIG} apply -f prod_deployment.yml"
-				}
+				echo 'Deploying service to production'
+				bat "helm upgrade ${env.SERVICE_NAME} --install --set production=true,replica_count=4,service.port=80, service.name=${env.SERVICE_NAME},database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} ./petstore-chart "
 			}
 		}
     }

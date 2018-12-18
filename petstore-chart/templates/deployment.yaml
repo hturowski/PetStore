@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.service.name}}
+  labels:
+    run: {{.Values.service.name}}
+spec:
+  ports:
+    - port:  {{.Values.service.port}}
+      protocol: TCP
+      targetPort: 80
+  selector:
+    run: {{.Values.service.name}}
+  type: LoadBalancer
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.service.name}}
+  labels:
+    run: 
+spec:
+  replicas: {{.Values.replica_count}}
+  selector:
+    matchLabels:
+      run: {{.Values.service.name}}
+  template:
+    metadata:
+      labels:
+        run: {{.Values.service.name}}
+    spec:
+      containers:
+      - name: {{.Values.image.name | replace  "_" "-"}}
+        image: {{.Values.image.name}}:{{.Values.image.tag}}
+        ports:
+        - containerPort: {{.Values.service.port}}
+          protocol: TCP
+        env:
+          - name: DBNAME
+            value: {{ if (eq .Values.production true) -}}
+                      {{.Values.database.name}}
+                    {{- else -}}
+                      {{.Values.database.name}}_{{.Values.branch_name}}
+                    {{- end }}
+          - name: DBHOST
+            value: petstore-mysql.default.svc.cluster.local
+          - name: DBUSERNAME
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbusername
+          - name: DBPASSWORD
+            valueFrom:
+              secretKeyRef: 
+                name: dbcredentials
+                key: dbpassword
+

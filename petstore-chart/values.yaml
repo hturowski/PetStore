@@ -1,0 +1,18 @@
+# Default values for petstore.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+branch_name: master
+production: false
+replica_count: 1
+
+service:
+  name: petstore
+  port: 80
+
+database:
+  name: petstore
+
+image:
+  name: petstore_master
+  tag: 72
