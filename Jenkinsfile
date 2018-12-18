@@ -92,7 +92,7 @@ pipeline {
 			}
 			steps {
 				echo 'Deploying service to production'
-				bat "helm upgrade ${env.SERVICE_NAME} --install --set production=true,replica_count=4,service.port=80, service.name=${env.SERVICE_NAME},database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} ./petstore-chart "
+				bat "helm upgrade ${env.SERVICE_NAME} --install --set production=true,replica_count=4,service.port=80,service.name=${env.SERVICE_NAME},database.name=${env.SERVICE_NAME},branch_name=${env.BRANCH_NAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} ./petstore-chart "
 			}
 		}
     }
