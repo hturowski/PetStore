@@ -50,7 +50,7 @@ pipeline {
         stage('Deploy') {
             steps {
 			    echo 'Deploying service to branch namespace'
-				bat "helm install --replace -name ${env.SERVICE_NAME}-${env.BRANCH_NAME} --set production=false,service.port=${env.EXTERNAL_PORT},service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME},replica_count=1,database.name=${env.DBNAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} --namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} ./petstore-chart"
+				bat "helm install --replace --name ${env.SERVICE_NAME}-${env.BRANCH_NAME} --set production=false,service.port=${env.EXTERNAL_PORT},service.name=${env.SERVICE_NAME}-${env.BRANCH_NAME},replica_count=1,database.name=${env.DBNAME},image.name=${env.DOCKER_IMAGE},image.tag=${env.BUILD_NUMBER} --namespace ${env.SERVICE_NAME}-${env.BRANCH_NAME} ./petstore-chart"
             }
         }
 		
