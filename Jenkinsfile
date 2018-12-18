@@ -9,6 +9,17 @@ def getExternalPort()
 	}
 }
 
+def getNamespace()
+{
+	def branchName = "${env.BRANCH_NAME}"
+	if(branchName == "master") {
+		return "master"
+	}
+	else {
+		return "${env.SERVICE_NAME}-${env.BRANCH_NAME}"
+	}
+}
+
 pipeline {
     agent any
 	environment {
@@ -19,7 +30,7 @@ pipeline {
 		DOCKER_IMAGE="${SERVICE_NAME}-${env.BRANCH_NAME}"
 		KUBEDBHOST="petstore-mysql.default.svc.cluster.local"
 		KUBECONFIG="c:\\.kube\\config"
-		NAMESPACE="${env.BRANCH_NAME}"
+		NAMESPACE=getNamespace()
         EXTERNAL_PORT = getExternalPort()
 	}
 
