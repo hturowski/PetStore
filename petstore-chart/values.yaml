@@ -14,5 +14,5 @@ database:
   name: petstore
 
 image:
-  name: petstore_master
-  tag: 72
+  name: petstore-master
+  tag: 00
