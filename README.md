@@ -53,16 +53,9 @@ You can leave the other options alone, or remove things you know you won't need 
 Jenkins will install as a Windows service and start automatically.
 Once installed, you will find Jenkins at `http://localhost:8080/` 
 
-### Ruby
-The deployment process uses a Ruby script to generate Kubernetes deployment files.
-You will need to have Ruby installed and available to all users on your system.
-This means that `ruby.exe` needs to be in the system's `PATH`.
-After you clone the repository, open a terminal window in the `Ruby` directory and run `ruby install bundler` followed by `bundle install`.
-
 ## Deploy MySQL to your Kubernetes Cluster
-In the PetStore subdirectory there is a file named `PetStore-MySQL.yml`.
-This contains deployment information for the MySQL database which will be the back end for our service.
-From the PetStore subdirectory run `kubectl create -f PetStore-MySQL.yml` to create the database instance.
+Use the following command to deploy MySql to your local kubernetes cluster:
+`helm install --name petstore-mysql --set service.type=LoadBalancer,mysqlRootPassword=root stable/mysql`
 The database will be accessible to your local machine on port `3306`, with username `root` and password `root` (I know... please don't send me emails).
 Launch MySQL Workbench and verify that you can connect to the database.
 
