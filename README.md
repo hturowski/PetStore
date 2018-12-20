@@ -9,7 +9,7 @@ This services requires a MySQL instance which can be deployed using the included
 When a branch is deleted, the Kubernetes namespace and related database are not removed.
 #### There is no Kubernetes ingress controller
 Currently the `default` namespace is production, the `master` namespace is for integration testing, and the branch namespace is for feature development.
-Each runs on its own port, with `default` on port 80, `master` on port `81` and all branches on port `82`.
+Each runs on its own port, with `default` on port `80`, `master` on port `81` and all branches on port `82`.
 All services should be running on port `80` with an ingress controller routing traffic appropriately, probably based on header information included in the namespace.
 This means that in the current state, this proof of concept only supports one feature branch, and manual cleanup is required before a new one can be deployed.
 
@@ -34,10 +34,13 @@ Remove the nginx deployment using `kubectl delete deployment nginx` and `kubectl
 After you have Kubernetes working, you'll need to copy (not move) the `.kube` folder in your user's home directory to the root of your `C` drive.
 After the copy, Jenkins will use the Kubernetes configuration file at `c:\.kube\config` to manage your local Kubernetes cluster.
 
+### Helm
+Helm makes managing deployments to Kubernetes easier. It allows us to create charts that define deployments and update those deployments to new versions when we need to. You will need to install [Helm](https://helm.sh) on your workstation.
+
 ### MySQL Workbench
 **Do not install MySQL on your local workstation.**
 If you have MySQL installed, stop the service and set it to start manually.
-When you deploy the MySQL instance to Kubernetes it will use default MySQL port `3306` so having a local instance running will cause problems.
+When you deploy the MySQL instance to Kubernetes it will use default MySQL port `3306` so having a local instance running will cause problems. You can use Helm to install MySQL with the following command: `helm install --name petstore-mysql --set service.type=LoadBalancer,mysqlRootPassword=root stable/mysql`
 
 You will need a way to interact with MySQL.
 You can use [MySQL Workbench](https://www.mysql.com/products/workbench/) or your favorite SQL tools.
